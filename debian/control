@@ -1,0 +1,161 @@
+Source: scalapack
+Section: devel
+Priority: optional
+Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
+Uploaders: Muammar El Khatib <muammar@debian.org>
+Standards-Version: 4.5.0
+Build-Depends: debhelper-compat (= 13),
+ cmake, 
+ mpi-default-dev,
+ mpi-default-bin,
+ libopenmpi-dev,
+ mpich, libmpich-dev,
+ gfortran,
+ libblas-dev | libopenblas-dev | libatlas-base-dev | libblas.so,
+ liblapack-dev | libopenblas-dev | libatlas-base-dev | liblapack.so,
+ pkg-config,
+ chrpath
+Homepage: http://www.netlib.org/scalapack/
+Vcs-Git: https://salsa.debian.org/science-team/scalapack.git
+Vcs-Browser: https://salsa.debian.org/science-team/scalapack
+
+Package: libscalapack-openmpi2.1
+Section: libs
+Architecture: any
+Multi-Arch: same
+Depends: mpi-default-bin, ${shlibs:Depends}, ${misc:Depends}
+Conflicts: scalapack2-mpich
+Breaks: libscalapack-mpi1 (<< 1.8.0-9.1)
+Replaces: scalapack1-mpich, libscalapack-mpi1 (<< 1.8.0-9.1)
+Suggests: scalapack-doc
+Description: Scalable Linear Algebra Package - Shared libs for OpenMPI
+ ScaLAPACK is the parallel version of LAPACK used on clusters.
+ .
+ There are packages for the shared libraries (this one), for the 
+ static libraries and the development files and for test programs.
+ .
+ Also included:
+   - PBLAS, Parallel Basic Linear Algebra Subprograms
+   - BLACS, Basic Linear Algebra Communication Subprograms
+ .
+ This package supports the OpenMPI implementation of MPI.
+
+Package: libscalapack-mpich2.1
+Section: libs
+Architecture: any
+Multi-Arch: same
+Depends: mpi-default-bin, ${shlibs:Depends}, ${misc:Depends}
+Conflicts: scalapack2-mpich
+Breaks: libscalapack-mpi1 (<< 1.8.0-9.1)
+Replaces: scalapack1-mpich, libscalapack-mpi1 (<< 1.8.0-9.1)
+Suggests: scalapack-doc
+Description: Scalable Linear Algebra Package - Shared libs for MPICH
+ ScaLAPACK is the parallel version of LAPACK used on clusters.
+ .
+ There are packages for the shared libraries (this one), for the 
+ static libraries and the development files and for test programs.
+ .
+ Also included:
+   - PBLAS, Parallel Basic Linear Algebra Subprograms
+   - BLACS, Basic Linear Algebra Communication Subprograms
+ .
+ This package supports the MPICH implementation of MPI.
+
+Package: libscalapack-mpi-dev
+Section: libdevel
+Architecture: any
+Multi-Arch: same
+Depends: ${scalapack-mpi-dev}, mpi-default-dev, ${misc:Depends}
+Replaces: libblacs-mpi-dev
+Provides: libblacs-mpi-dev
+Suggests: scalapack-doc
+Description: Scalable Linear Algebra Package - Dev files for MPI
+ ScaLAPACK is the parallel version of LAPACK used on clusters.
+ .
+ There are packages for the shared libraries, for the static libraries and
+ the development files (this one) and for test programs.
+ .
+ Also included:
+    - PBLAS, Parallel Basic Linear Algebra Subprograms
+    - BLACS, Basic Linear Algebra Communication Subprograms
+ .
+ This is a dummy package which depends on the scalapack development package
+ supporting the default implementation of MPI on this architecture.
+
+Package: libscalapack-mpich-dev
+Section: libdevel
+Architecture: any
+Multi-Arch: same
+Depends: libscalapack-mpich2.1 (= ${binary:Version}), ${misc:Depends}
+Breaks: libscalapack-mpi-dev (<< 2.0.2-1)
+Replaces: libblacs-mpi-dev
+Provides: libblacs-mpi-dev
+Suggests: scalapack-doc
+Description: Scalable Linear Algebra Package - Dev files for MPICH
+ ScaLAPACK is the parallel version of LAPACK used on clusters.
+ .
+ There are packages for the shared libraries, for the static libraries and
+ the development files (this one) and for test programs.
+ .
+ Also included:
+    - PBLAS, Parallel Basic Linear Algebra Subprograms
+    - BLACS, Basic Linear Algebra Communication Subprograms
+ Also included: PBLAS, Parallel Basic Linear Algebra Subprograms.
+ .
+ This package supports the MPICH implementation of MPI.
+
+Package: libscalapack-openmpi-dev
+Section: libdevel
+Architecture: any
+Multi-Arch: same
+Depends: libscalapack-openmpi2.1 (= ${binary:Version}), ${misc:Depends}
+Breaks: libscalapack-mpi-dev (<< 2.0.2-1)
+Replaces: libblacs-mpi-dev
+Provides: libblacs-mpi-dev
+Suggests: scalapack-doc
+Description: Scalable Linear Algebra Package - Dev files for OpenMPI
+ ScaLAPACK is the parallel version of LAPACK used on clusters.
+ .
+ There are packages for the shared libraries, for the static libraries and
+ the development files (this one) and for test programs.
+ .
+ Also included:
+    - PBLAS, Parallel Basic Linear Algebra Subprograms
+    - BLACS, Basic Linear Algebra Communication Subprograms
+ .
+ This package supports the OpenMPI implementation of MPI.
+
+Package: scalapack-mpi-test
+Section: math
+Architecture: any
+Multi-Arch: same
+Depends: scalapack-test-common, ${shlibs:Depends}, ${misc:Depends}
+Recommends: cmake
+Conflicts: scalapack-mpich-test
+Replaces: scalapack-mpich-test, blacs-mpi-test
+Provides: scalapack-mpich-test, blacs-mpi-test
+Suggests: scalapack-doc
+Description: Scalable Linear Algebra Package - Test files for MPI
+ ScaLAPACK is the parallel version of LAPACK used on clusters.
+ .
+ Also included:
+    - PBLAS, Parallel Basic Linear Algebra Subprograms
+    - BLACS, Basic Linear Algebra Communication Subprograms
+ .
+ This package contains ScaLAPACK, PBLAS and BLACS test programs.
+
+Package: scalapack-test-common
+Architecture: all
+Multi-Arch: foreign
+Depends: ${misc:Depends}
+Replaces: blacs-test-common
+Provides: blacs-test-common
+Suggests: scalapack-mpi-test
+Description: Test data for ScaLAPACK testers
+ ScaLAPACK is the parallel version of LAPACK used on clusters.
+ .
+ Also included:
+    - PBLAS, Parallel Basic Linear Algebra Subprograms
+    - BLACS, Basic Linear Algebra Communication Subprograms
+ .
+ This package contains data files used by test programs.

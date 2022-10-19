@@ -1,0 +1,626 @@
+scalapack (2.1.0-4) unstable; urgency=medium
+
+  * Team upload.
+  * retrospectively place Adam C. Powell, IV's name in quotes
+  * override lintian's breakout-link warning for scalapack-mpi-test.
+    Test binaries in usr/lib look locally for test input files which
+    are stored in usr/share, hence links are needed.
+  * inject CMAKE_LIBRARY_ARCHITECTURE into
+    scalapack-targets-none.cmake for arch-dep packages
+    (libscalapack-*-dev) not arch-indep.
+  * don't run full configure/build/test for arch-indep builds
+    (scalapack-test-common does not need arch-dep binaries)
+
+ -- Drew Parsons <dparsons@debian.org>  Mon, 03 Aug 2020 12:20:27 +0800
+
+scalapack (2.1.0-3) unstable; urgency=medium
+
+  * Team upload.
+  * facilitate MPI tests using OMPI_MCA_plm_rsh_agent (set to false)
+    not OMPI_MCA_orte_rsh_agent (which is deprecated)
+  * build with fortran flag -std=legacy (in FFLAGS), applying
+    upstream's method for managing builds with gcc-10. Closes: #957774.
+  * replace arch-triplet with cmake's CMAKE_LIBRARY_ARCHITECTURE in
+    installed scalapack-targets-none.cmake
+  * Standards-Version: 4.5.0
+  * debhelper compatibility level 13
+
+ -- Drew Parsons <dparsons@debian.org>  Mon, 03 Aug 2020 01:44:46 +0800
+
+scalapack (2.1.0-2) unstable; urgency=medium
+
+  * Team upload.
+  * upload new upstream release to unstable
+
+ -- Drew Parsons <dparsons@debian.org>  Sun, 15 Dec 2019 17:48:16 +1100
+
+scalapack (2.1.0-1exp1) experimental; urgency=medium
+
+  * Team upload.
+  * New upstream release: updates version number in code.
+    - update ABI to libscalapack-openmpi.so.2.1 with package
+      libscalapack-openmpi2.1 (likewise libscalapack-mpich2.1)
+  * set multiarch headers
+    - Multi-Arch: same: libscalapack-mpi-dev,
+       libscalapack-mpich-dev, libscalapack-openmpi-dev,
+       libscalapack-openmpi2.1, libscalapack-mpich2.1,
+       scalapack-mpi-test
+    - Multi-Arch: foreign: scalapack-test-common
+
+ -- Drew Parsons <dparsons@debian.org>  Thu, 28 Nov 2019 17:08:45 +0800
+
+scalapack (2.1-1exp1) experimental; urgency=medium
+
+  * Team upload.
+  * update debian/watch to
+    https://github.com/Reference-ScaLAPACK/scalapack
+    (source tarballs are no longer accessible at
+    http://www.netlib.org/scalapack/scalapack-2.1.tgz)
+  * New upstream release.
+    - update debian/copyight: BSD-3-clause
+  * debhelper compatibility level 12: debhelper-compat (= 12)
+  * Standards-Version: 4.4.1
+
+ -- Drew Parsons <dparsons@debian.org>  Sun, 24 Nov 2019 23:20:38 +0800
+
+scalapack (2.0.2-7) unstable; urgency=medium
+
+  * Team upload.
+  * Add mipsel to no-test list (tests pass on some machines,
+    but not all)
+
+ -- Drew Parsons <dparsons@debian.org>  Fri, 27 Apr 2018 08:33:16 +0800
+
+scalapack (2.0.2-6) unstable; urgency=medium
+
+  * Team upload.
+  * Don't run openmpi3 tests on arches where tests do not exit,
+    or take too long to complete. Currently
+    ARCH_NO_OPENMPI_TEST_LIST = armel armhf i386 hppa powerpc
+
+ -- Drew Parsons <dparsons@debian.org>  Thu, 26 Apr 2018 15:07:18 +0800
+
+scalapack (2.0.2-5) unstable; urgency=medium
+
+  * Team upload.
+  * Fix short description of libscalapack-mpi-dev: supports default
+    MPI not (necessarily) MPICH.
+  * Patch blacs_testing.patch allows for empty output strings
+    when an error occurs.
+  * Tests are hardwired to 4 processes, so ignore test failures if
+    less than 4 processes are used. Pass MPIEXEC_PREFLAGS to tests,
+    with --allow-run-as-root --oversubscribe to enable 4 processes to
+    be handled if they are not otherwise available.
+  * Standards-Version: 4.1.4
+  * Update VCS tags to salsa.debian.org.
+
+ -- Drew Parsons <dparsons@debian.org>  Sun, 22 Apr 2018 17:51:08 +0800
+
+scalapack (2.0.2-4) unstable; urgency=medium
+
+  * Team upload.
+  * Standards-Version: 4.1.1
+  * List OpenBLAS and ATLAS as alternative Build-Deps to provide BLAS
+    and LAPACK.
+  * Ubuntu uses linker flag -Bsymbolic-functions at build time, but it
+    causes tests to fail. So strip it from LDFLAGS.
+    Thanks Steve Langasek. Closes: #883042.
+  * Priority: optional not extra.
+  * debian/rules: conditionally define Debian build variables using ?=
+
+ -- Drew Parsons <dparsons@debian.org>  Fri, 01 Dec 2017 01:49:53 +0800
+
+scalapack (2.0.2-3) unstable; urgency=medium
+
+  * Team upload.
+  * Add powerpc to the set of arches for which tests are ignored,
+    since openmpi tests randomly fail on powerpc buildds.
+
+ -- Drew Parsons <dparsons@debian.org>  Mon, 11 Sep 2017 00:26:09 +0800
+
+scalapack (2.0.2-2) unstable; urgency=medium
+
+  * Team upload.
+  * Standards-Version: 4.1.0
+  * blacs is now included in scalapack. blacs initialisation is now
+    independent of whether it is called from C or Fortran. 
+    Closes: #854228.
+
+ -- Drew Parsons <dparsons@debian.org>  Sun, 10 Sep 2017 01:30:35 +0800
+
+scalapack (2.0.2-1exp8) experimental; urgency=medium
+
+  * Team upload.
+  * Fix spelling of mips64el.
+
+ -- Drew Parsons <dparsons@debian.org>  Thu, 17 Aug 2017 01:35:44 +0800
+
+scalapack (2.0.2-1exp7) experimental; urgency=medium
+
+  * Team upload.
+  * scalapack-mpi-test: install links to BLACS test executables
+  * ignore build test failures on mips64el
+
+ -- Drew Parsons <dparsons@debian.org>  Wed, 16 Aug 2017 15:07:02 +0800
+
+scalapack (2.0.2-1exp6) experimental; urgency=medium
+
+  * Team upload.
+  * Only check openmpi test Fails on linux,
+    since openmpi doesn't support fakeroot usage on kfreebsd or hurd.
+  * dh_auto_test
+    - use tee to throw test output to stdout as well as
+      dh_auto_test.log. Avoids buildd timeout on slower arches like
+      powerpc.
+    - fail on SegFault as well as Failed
+  * add PBLAS tests (including timing) to scalapack-mpi-test
+
+ -- Drew Parsons <dparsons@debian.org>  Tue, 08 Aug 2017 08:11:37 +0800
+
+scalapack (2.0.2-1exp5) experimental; urgency=medium
+
+  * Team upload.
+  * Apply chrpath (dh_install override) to arch build only.
+  * Standards-Version: 4.0.1
+
+ -- Drew Parsons <dparsons@debian.org>  Mon, 07 Aug 2017 12:37:24 +0800
+
+scalapack (2.0.2-1exp4) experimental; urgency=medium
+
+  * Team upload.
+  * debian/rules: when tests fail, list the Failed tests before
+    returning error code 2.
+  * Provide test executables for both scalapack and blacs in
+    scalapack-mpi-test. Best run using ctest.
+  * debian control files now use /bin/sh instead of dh-exec when needed.
+  * Both libscalapack-openmpi-dev and libscalapack-openmpi-dev 
+    Breaks: libscalapack-mpi-dev (<< 2.0.2-1), since they now handle
+    /usr/lib/<arch>/libscalapack-{openmpi,mpich}.so. Closes: #870582.
+  * libscalapack-{openmpi,mpich}-dev provides scalapack cmake and
+    pkgconfig files
+  * Build-Depends: chrpath (used on test executables)
+
+ -- Drew Parsons <dparsons@debian.org>  Sun, 06 Aug 2017 14:26:31 +0800
+
+scalapack (2.0.2-1exp3) experimental; urgency=medium
+
+  * Team upload.
+  * debian/rules: when testing, ignore Timeout and fail only on true
+    Failed results in openmpi. Log mpich tests but ignore mpich Fails.
+
+ -- Drew Parsons <dparsons@debian.org>  Wed, 19 Jul 2017 17:07:15 +0800
+
+scalapack (2.0.2-1exp2) experimental; urgency=medium
+
+  * Team upload.
+  * install TESTING source files into scalapack-mpi-test
+
+ -- Drew Parsons <dparsons@debian.org>  Sun, 09 Jul 2017 10:24:27 +0800
+
+scalapack (2.0.2-1exp1) experimental; urgency=medium
+
+  * Team upload.
+  * New upstream version. Closes: #671380.
+    Provides:
+    - BLACS.
+    - PxHSEQR: Nonsymmetric Eigenvalue Problem
+    - PxSYEVR/PxHEEVR: MRRR (Multiple Relatively Robust
+      Representations) algorithm.
+    - cmake support
+  * MPI only: PVM is no longer supported.
+  * Packaging updates. Thanks Christophe Trophime.
+    - build both openmpi and mpich packages on all arches
+    - debian/rules: move to debhelper (dh) with cmake
+    - d/rules: enable tests only if NUMJOBS is greater than 1
+    - d/control: dev packages replace and provide libblacs-mpi-dev
+  * Standards-Version: 4.0.0
+  * Debhelper compatibility level 10
+
+ -- Drew Parsons <dparsons@debian.org>  Sun, 09 Jul 2017 02:32:49 +0800
+
+scalapack (1.8.0-14) unstable; urgency=medium
+
+  * Team upload.
+  * Now team-maintained with Debian Science.
+  * Update list of openmpi archs: add powerpcspe, remove mips64, sparc.
+  * Place libraries in multiarch dir.
+  * debian/compat 9 (debhelper)
+  * Standards-Version: 3.9.8
+
+ -- Drew Parsons <dparsons@debian.org>  Mon, 12 Jun 2017 03:01:03 +0800
+
+scalapack (1.8.0-13) unstable; urgency=medium
+
+  * Added missing build-{arch,indep} targets. Thanks to Santiago Vila for
+    providing a patch. Closes: #822021.
+  * hppa architecture switched to openmpi. Closes: #834182.
+
+ -- Muammar El Khatib <muammar@debian.org>  Mon, 05 Sep 2016 23:48:13 +0200
+
+scalapack (1.8.0-12.3) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Update the list of MPI architectures.
+    + switch s390x from mpich to OpenMPI.
+    + switch sparc64 from mpich to OpenMPI.
+    + switch ppc64 from mpich to OpenMPI.
+    + add x32 to OpenMPI.
+    + add sh4 to mpich.
+    + drop powerpcspe.
+    + Closes: #814334
+  * Fix FTBFS when using -Wl,--as-needed by adding -lm to the linker flags.
+
+ -- Mattia Rizzolo <mattia@debian.org>  Wed, 10 Feb 2016 14:02:59 +0000
+
+scalapack (1.8.0-12.2) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Fix for openmpi1.10 transition: Use `pkg-config mpi-fort --libs`.
+    Origian patch by Alastair McKinstry.  Closes: #813498
+
+ -- Mattia Rizzolo <mattia@debian.org>  Fri, 05 Feb 2016 14:31:30 +0000
+
+scalapack (1.8.0-12.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  [James Cowgill]
+  * add mips64(el) into OPENMPI_ARCHES. (Closes: #775402)
+
+ -- YunQiang Su <syq@debian.org>  Tue, 10 Mar 2015 17:08:23 +0800
+
+scalapack (1.8.0-12) unstable; urgency=medium
+
+  * Correcting previous bug with this new upload. arm64 has been changed to
+    OPENMPI_ARCHS in debian/rules.
+
+ -- Muammar El Khatib <muammar@debian.org>  Wed, 22 Oct 2014 20:45:57 +0200
+
+scalapack (1.8.0-11) unstable; urgency=medium
+
+  * "arm64" has been moved from MPICH_ARCHS to OPENMPI_ARCHS in debian/rules.
+    (Closes: #766035)
+
+ -- Muammar El Khatib <muammar@debian.org>  Mon, 20 Oct 2014 17:30:28 +0200
+
+scalapack (1.8.0-10) unstable; urgency=medium
+
+  * FTBFS on ppc64el is fixed in this revision. Thanks to Aurelien Jarno for
+    seding a patch. (Closes: #761317)
+  * Scalapack builds with clang instead of gcc. Thanks to Sylvestre Ledru for
+    sending a patch. (Closes: #710395)
+
+ -- Muammar El Khatib <muammar@debian.org>  Sun, 21 Sep 2014 14:33:42 +0200
+
+scalapack (1.8.0-9.2) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Drop transitional package libscalapack-mpi1: it breaks reverse
+    dependencies on mpich archs, because of the mpich2->mpich transition.
+
+ -- Sébastien Villemot <sebastien@debian.org>  Wed, 23 Apr 2014 14:36:46 +0200
+
+scalapack (1.8.0-9.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * No longer silently change the SONAME of the MPI scalapack shared
+    library when the default MPI implementation changes on a given arch.
+    (Closes: #740620)
+    + Create two new binary packages libscalapack-openmpi1 and
+      libscalapack-mpich1, corresponding to the two possible SONAMES.
+    + The architecture list for each binary package is stored in debian/rules,
+      and debian/control is now generated from debian/control.in by the clean
+      rule.
+    + Keep a transitional package for libscalapack-mpi1.
+    + Make sure that the package FTBFS if the default MPI implementation
+      changes on a given arch (instead of silently changing the SONAME or
+      creating an empty package).
+
+ -- Sébastien Villemot <sebastien@debian.org>  Mon, 24 Mar 2014 18:20:38 +0100
+
+scalapack (1.8.0-9) unstable; urgency=low
+
+  * scalapack failed to build from source with the new mpich2's targets. For
+    avoiding this, scalapack has been linked explicitly with -lmpich -lmpl.
+    Thanks again to Adam C Powell IV for providing a solution. (Closes: #653610)
+
+ -- Muammar El Khatib <muammar@debian.org>  Thu, 29 Dec 2011 20:24:51 +0100
+
+scalapack (1.8.0-8) unstable; urgency=low
+
+  * Added mpich2 targets in debian/rules. Thanks to Adam C Powell IV for
+    providing a patch. (Closes: 652313)
+
+ -- Muammar El Khatib <muammar@debian.org>  Thu, 22 Dec 2011 16:58:01 -0500
+
+scalapack (1.8.0-7) unstable; urgency=low
+
+  * Test command execution failure caused due to incompatible file location in
+    package scalapack-test-common has been fixed adding symbolic links pointing
+    files to the correct location. (Closes: #588404) Files cannot be moved
+    directly to /usr/lib/scalapack becasuse they are .dat files. Refer to
+    Filesystem Hierarchy Standard | /usr/share : Architecture-independent data
+    for more information.
+  * Switch to dpkg-source 3.0 (quilt) format.
+  * Maintainer's mail has been changed.
+  * Patched Mptr offset calculation to enable arrays with more than
+    2^31 bytes. Thanks to David Gleich.
+
+ -- Muammar El Khatib <muammar@debian.org>  Tue, 18 Sep 2011 08:26:29 +0200
+
+scalapack (1.8.0-6) unstable; urgency=low
+
+  * debian/rules file has been updated for linking against blas and lapack
+    instead of blas-3gf and lapack-3. With this change, scalapack does not fail
+    to build from source. (Closes: #577895)
+  * debian/source directory has been created for specifying 1.0 version in the
+    file debian/source/format.
+
+ -- Muammar El Khatib <muammarelkhatib@gmail.com>  Mon, 19 Apr 2010 15:07:49 -0430
+
+scalapack (1.8.0-5) unstable; urgency=low
+
+  * Bumped standards version to 3.8.4.
+  * diff.gz file has been cleaned in this revision.
+  * debian/control: ${misc:Depends} has been added to Depends control field.
+
+ -- Muammar El Khatib <muammarelkhatib@gmail.com>  Mon, 01 Feb 2010 12:25:42 -0430
+
+scalapack (1.8.0-4) unstable; urgency=low
+
+  * Bumped standards version to 3.8.3.
+  * scalapack-pvm-test does not depend on scalapack1-pvm anymore. To accomplish
+    this, the debian/shlibs.local file has been updated  (Closes: #549707)
+  * Typo in scalapack-test-common's description has been fixed.
+    (Closes: #557848)
+
+ -- Muammar El Khatib <muammarelkhatib@gmail.com>  Fri, 18 Dec 2009 18:17:45 -0430
+
+scalapack (1.8.0-3.1) unstable; urgency=low
+
+  * NMU as authorized by maintainer.
+  * Changed to build against mpi-default-dev. (Closes: #491028)
+  * Replaced two sets of shlib, -dev and -test packages with just one.
+  * Changed binary package names to generic mpi and to comply with policy
+    i.e. libscalapack-mpi1 and libblacs-mpi-dev.
+  * Added sections to all packages.
+
+ -- "Adam C. Powell, IV" <hazelsct@debian.org>  Mon, 04 May 2009 21:59:43 -0400
+
+scalapack (1.8.0-3) unstable; urgency=low
+
+  * Bumped standards version to 3.8.0.
+  * Updated build dependency to debhelper >=6
+  * Bug: 'FTBFS: symbols not found' has been fixed in this revision.
+   (Closes: #483323)
+
+ -- Muammar El Khatib <muammarelkhatib@gmail.com>  Fri, 06 Jun 2008 13:22:03 -0430
+
+scalapack (1.8.0-2) unstable; urgency=low
+
+  * Bumped standards version to 3.7.3.
+  * Scalpack is now building with Gfortran instead of G77. Thanks to Kumar
+    Appaiah for providing a patch. (Closes: #465392)
+  * Bug:' FTBFS: psblas1tst.f:(.text+0x156): undefined reference to
+    `blacs_pinfo__'' has been fixed in this revision. (Closes: #462510)
+
+ -- Muammar El Khatib <muammarelkhatib@gmail.com>  Sun, 09 Mar 2008 12:33:24 -0430
+
+scalapack (1.8.0-1) unstable; urgency=low
+
+  * New upstream release.
+  * Updated build dependency to debhelper >= 5
+  * Line in debian/rules that seted DH_COMPAT globally was deleted and a
+    separated debian/compat file created.
+
+ -- Muammar El Khatib <muammarelkhatib@gmail.com>  Sat, 07 Apr 2007 00:00:13 -0400
+
+scalapack (1.7.4-2) unstable; urgency=low
+
+  * Problems with symbolic link references the wrong file
+    have been fixed. Closes: #380140
+  * Updated build dependency to debhelper >= 4.
+  * Moved architecture independent test input data to /usr/share/scalapack.
+  * Thanks to Philipp Frauenfelder.
+  * New maintainer. Closes: #335006
+
+ -- Muammar El Khatib <muammarelkhatib@gmail.com>  Sun, 17 Sep 2006 13:51:20 -0400
+
+scalapack (1.7.4-1) unstable; urgency=low
+
+  * New upstream release
+  * Bumped standards version to 3.7.2 - no changes
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Wed, 12 Jul 2006 22:49:44 +0200
+
+scalapack (1.7-11) unstable; urgency=low
+
+  * Also allow building against atlas3-*-dev. Closes: #334002
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Wed, 26 Oct 2005 21:38:45 +0200
+
+scalapack (1.7-10) unstable; urgency=low
+
+  * Remove f2c from build depends and from SLmake.inc. Closes: #332955
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Thu, 13 Oct 2005 21:36:17 +0200
+
+scalapack (1.7-9) unstable; urgency=low
+
+  * Recompile against C++ ABI changed mpich (and change build depends).
+    Closes: #325810
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Wed, 31 Aug 2005 23:05:18 +0200
+
+scalapack (1.7-8) unstable; urgency=low
+
+  * Adjust build deps for LAPACK and BLAS and also change the linking
+    wrt. these libraries. Closes: #302425. Thanks to Camm Maguire
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Thu, 28 Apr 2005 13:55:52 +0200
+
+scalapack (1.7-7) unstable; urgency=low
+
+  * Adjust manual dependencies. Closes: #229831
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Sat, 21 Feb 2004 09:09:13 +0100
+
+scalapack (1.7-6) unstable; urgency=low
+
+  * Rebuild against lam4. Closes: #229831
+  * Better package descriptions.
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Sun, 15 Feb 2004 14:56:26 +0100
+
+scalapack (1.7-5) unstable; urgency=low
+
+  * Removed dangling symlinks from debian/*.links files. Closes: #138084
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Thu, 14 Mar 2002 08:35:57 +0100
+
+scalapack (1.7-4) unstable; urgency=low
+
+  * Changed call to dh_shlibdeps: using -l switch instead of mangled
+    LD_LIBRARY_PATH. Hopefully, this makes scalapack compile on sparc.
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Mon, 11 Feb 2002 13:15:03 +0100
+
+scalapack (1.7-3) unstable; urgency=low
+
+  * Append to LD_LIBRARY_PATH instead of overwriting it. Closes: #128910
+  * Build dependencies and linking were fixed in -2, but forgot to close.
+    Closes: #128448
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Sun, 13 Jan 2002 10:17:21 +0100
+
+scalapack (1.7-2) unstable; urgency=low
+
+  * Changed build depends from atlas to blas-dev, lapack-dev since atlas is a
+    drop in replacement of blas/lapack.
+  * Fixed two minor bugs in rules: shlibdeps was not called and the
+    binary-indep target had a missing dependency.
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Wed,  9 Jan 2002 11:57:26 +0100
+
+scalapack (1.7-1) unstable; urgency=low
+
+  * New upstream release (include PBLAS v2.0 as well!)
+  * Updated Build-Depends to new Atlas structure. Closes: #111628
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Mon,  1 Oct 2001 13:11:42 +0200
+
+scalapack (1.6-16) unstable; urgency=low
+
+  * Recompile against new lam 6.5.3 packages (lam3 and lam3-dev) including
+    the freshly compiled blacs packages depending on lam 6.5.3. Closes: #106948
+  * Depends should now include lam3. Closes: #106947
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Wed,  1 Aug 2001 12:55:53 +0000
+
+scalapack (1.6-15) unstable; urgency=low
+
+  * The previous upload did not contain the data files in
+    scalapack-test-common. Closes: #84703
+
+ -- Philipp Frauenfelder <pfrauenf@herodot.math.ethz.ch>  Mon,  5 Feb 2001 10:34:46 +0100
+
+scalapack (1.6-14) unstable; urgency=low
+
+  * 1.6-13 didn't make it to unstable. Closes: #74177, #74249
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Fri, 20 Oct 2000 12:23:32 +0200
+
+scalapack (1.6-13) frozen unstable; urgency=medium
+
+  * Recompile with new atlas2 installed. Closes: #60690, #60706, #60711 (all
+    grave!)
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Sun, 26 Mar 2000 13:50:52 +0200
+
+scalapack (1.6-12) frozen unstable; urgency=medium
+
+  * Added build dependancy to f2c (instead of libf2c). Closes: #57998
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Mon, 14 Feb 2000 12:06:05 +0100
+
+scalapack (1.6-11) frozen unstable; urgency=medium
+
+  * Added build dependancy to libf2c. Closes: #57271
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Tue,  8 Feb 2000 08:32:50 +0100
+
+scalapack (1.6-10) frozen unstable; urgency=medium
+
+  * Added build dependancy to blas-dev. Closes: #56995
+    (Must build dependancies be a interated wild guess?)
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Fri,  4 Feb 2000 14:11:23 +0100
+
+scalapack (1.6-9) frozen unstable; urgency=medium
+
+  * Correct missing build dependency to g77. Closes: #55828
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Fri, 21 Jan 2000 14:15:08 +0100
+
+scalapack (1.6-8) frozen unstable; urgency=low
+
+  * Reupload to frozen, -7 sat too long in incoming... :-(
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Tue, 18 Jan 2000 08:41:31 +0100
+
+scalapack (1.6-7) unstable; urgency=low
+
+  * Apparently, something with scalapack-test-common went wrong. Rebuild and
+    reupload to correct this. Closes: #51684.
+  * Changed rules to make the testing binaries linked against shared
+    libraries where available.
+  * Changed the TOTMEM parameter to 64MB as most Beowulf nodes have
+    plenty of memory.
+  * Experiments with Build-Depens in order to let the build daemon handle
+    the package (my box is too small).
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Fri,  7 Jan 2000 09:37:03 +0100
+
+scalapack (1.6-6) unstable; urgency=low
+
+  * Compile shared libraries too; completely new arrangement of packages:
+    scalapack{1,}-{lam,mpich}{-dev,-test,}.
+    Thanks to Camm Maguire <camm@enhanced.com>
+  * Removed v2 of PBLAS again. Need to investigate some missing symbols.
+  * Packages for lam, mpich and pvm can be installed together
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Wed, 13 Oct 1999 14:30:29 +0200
+
+scalapack (1.6-5) unstable; urgency=low
+
+  * Changed priority from optional to extra to fix dependency bug.
+  * Bumped standards version to 3.0.1.
+  * Moved to debhelper v2.
+  * Found a old reference to lam in the Makefile and replaced it
+    with mpich.
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Wed,  1 Sep 1999 09:34:31 +0200
+
+scalapack (1.6-4) unstable; urgency=low
+
+  * Added v2 of PBLAS, can handle matrices with different grids.
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Sun,  6 Jun 1999 14:19:30 +0200
+
+scalapack (1.6-3) unstable; urgency=low
+
+  * Now really removed hardcoded path in SLmake.inc-*, closes #37404, #37454
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Wed, 26 May 1999 19:14:49 +0200
+
+scalapack (1.6-2) unstable; urgency=low
+
+  * Separated the builds for MPI and PVM in debian/rules
+  * Removed hardcoded path in SLmake.inc-*, closes #37404, #37454
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Sun, 16 May 1999 18:54:50 +0200
+
+scalapack (1.6-1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Philipp Frauenfelder <pfrauenf@debian.org>  Sat, 24 Apr 1999 14:42:50 +0200

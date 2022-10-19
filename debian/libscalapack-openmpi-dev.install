@@ -1,0 +1,10 @@
+#! /bin/sh
+flavour=openmpi
+echo usr/lib/libscalapack-${flavour}.so usr/lib/${DEB_HOST_MULTIARCH}
+echo build-${flavour}/scalapack-${flavour}.pc usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig
+for c in config config-version targets; do
+  echo usr/lib/cmake/scalapack-2.1.0/scalapack-${c}.cmake usr/lib/cmake/scalapack-2.1.0.${flavour}
+done
+# scalapack-targets-none.cmake is specific to the mpi flavour, so grab from the mpi build dir
+# (see build-${flavor}/cmake_install.cmake)
+echo build-${flavour}/CMakeFiles/Export/lib/cmake/scalapack-2.1.0/scalapack-targets-none.cmake usr/lib/cmake/scalapack-2.1.0.${flavour}

@@ -1,0 +1,10 @@
+#! /bin/sh
+for flavour in openmpi mpich; do
+  echo build-${flavour}/TESTING/x* usr/lib/${DEB_HOST_MULTIARCH}/scalapack/${flavour}-tests
+  echo build-${flavour}/TESTING/CTestTestfile.cmake usr/lib/${DEB_HOST_MULTIARCH}/scalapack/${flavour}-tests
+  echo build-${flavour}/BLACS/TESTING/CTestTestfile.cmake usr/lib/${DEB_HOST_MULTIARCH}/scalapack/${flavour}-tests/BLACS
+  echo build-${flavour}/PBLAS/TESTING/*tst usr/lib/${DEB_HOST_MULTIARCH}/scalapack/${flavour}-tests/PBLAS
+  echo build-${flavour}/PBLAS/TESTING/CTestTestfile.cmake usr/lib/${DEB_HOST_MULTIARCH}/scalapack/${flavour}-tests/PBLAS
+  echo build-${flavour}/PBLAS/TIMING/*tim usr/lib/${DEB_HOST_MULTIARCH}/scalapack/${flavour}-tests/PBLAS/TIMING
+  echo build-${flavour}/PBLAS/TIMING/CTestTestfile.cmake usr/lib/${DEB_HOST_MULTIARCH}/scalapack/${flavour}-tests/PBLAS/TIMING
+done

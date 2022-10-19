@@ -1,0 +1,10 @@
+Test executables for scalapack are provided in /usr/lib/<arch>/scalapack, 
+for both openmpi and mpich versions.
+
+Test executables for PBLAS and BLACS are provided in the PBLAS and 
+BLACS subdirectories.
+
+These tests are most conveniently launched by running cmake's ctest in the 
+directory containing the executables (and CTestTestfile.cmake). Copy the 
+test directories to a writable location to allow temporary files and 
+subdirs to be created by ctest.

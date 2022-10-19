@@ -1,0 +1,4 @@
+sharedlibs-soname.patch
+blacs_testing.patch
+pblas_testing.patch
+scalapack_testing.patch

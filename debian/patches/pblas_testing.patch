@@ -1,0 +1,78 @@
+Index: scalapack/PBLAS/TIMING/CMakeLists.txt
+===================================================================
+--- scalapack.orig/PBLAS/TIMING/CMakeLists.txt
++++ scalapack/PBLAS/TIMING/CMakeLists.txt
+@@ -59,20 +59,20 @@ target_link_libraries(dpb3tim scalapack
+ target_link_libraries(cpb3tim scalapack ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+ target_link_libraries(zpb3tim scalapack ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+ 
+-add_test(spb1tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./spb1tim)
+-add_test(dpb1tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./dpb1tim)
+-add_test(cpb1tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./cpb1tim)
+-add_test(zpb1tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./zpb1tim)
+-
+-add_test(spb2tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./spb2tim)
+-add_test(dpb2tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./dpb2tim)
+-add_test(cpb2tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./cpb2tim)
+-add_test(zpb2tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./zpb2tim)
+-
+-add_test(spb3tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./spb3tim)
+-add_test(dpb3tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./dpb3tim)
+-add_test(cpb3tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./cpb3tim)
+-add_test(zpb3tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./zpb3tim)
++add_test(spb1tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./spb1tim)
++add_test(dpb1tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./dpb1tim)
++add_test(cpb1tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./cpb1tim)
++add_test(zpb1tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./zpb1tim)
++
++add_test(spb2tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./spb2tim)
++add_test(dpb2tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./dpb2tim)
++add_test(cpb2tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./cpb2tim)
++add_test(zpb2tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./zpb2tim)
++
++add_test(spb3tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./spb3tim)
++add_test(dpb3tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./dpb3tim)
++add_test(cpb3tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./cpb3tim)
++add_test(zpb3tim ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./zpb3tim)
+ 
+ 
+ 
+Index: scalapack/PBLAS/TESTING/CMakeLists.txt
+===================================================================
+--- scalapack.orig/PBLAS/TESTING/CMakeLists.txt
++++ scalapack/PBLAS/TESTING/CMakeLists.txt
+@@ -59,20 +59,20 @@ target_link_libraries(dpb3tst scalapack
+ target_link_libraries(cpb3tst scalapack ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+ target_link_libraries(zpb3tst scalapack ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+ 
+-add_test(spb1tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./spb1tst)
+-add_test(dpb1tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./dpb1tst)
+-add_test(cpb1tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./cpb1tst)
+-add_test(zpb1tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./zpb1tst)
+-
+-add_test(spb2tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./spb2tst)
+-add_test(dpb2tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./dpb2tst)
+-add_test(cpb2tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./cpb2tst)
+-add_test(zpb2tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./zpb2tst)
+-
+-add_test(spb3tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./spb3tst)
+-add_test(dpb3tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./dpb3tst)
+-add_test(cpb3tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./cpb3tst)
+-add_test(zpb3tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./zpb3tst)
++add_test(spb1tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./spb1tst)
++add_test(dpb1tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./dpb1tst)
++add_test(cpb1tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./cpb1tst)
++add_test(zpb1tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./zpb1tst)
++
++add_test(spb2tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./spb2tst)
++add_test(dpb2tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./dpb2tst)
++add_test(cpb2tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./cpb2tst)
++add_test(zpb2tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./zpb2tst)
++
++add_test(spb3tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./spb3tst)
++add_test(dpb3tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./dpb3tst)
++add_test(cpb3tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./cpb3tst)
++add_test(zpb3tst ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 \${MPIEXEC_PREFLAGS} ./zpb3tst)
+ 
+ 
+ 

@@ -1,0 +1,4 @@
+usr/share/scalapack
+usr/share/scalapack/BLACS
+usr/share/scalapack/PBLAS
+usr/share/scalapack/PBLAS/TIMING

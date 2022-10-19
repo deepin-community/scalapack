@@ -1,0 +1,134 @@
+#! /usr/bin/make -f
+
+
+# eventually add -O3 -march=native -mtune=native
+export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+export DEB_CXXFLAGS_MAINT_APPEND  = -Wall -pedantic
+export DEB_FFLAGS_MAINT_APPEND  = -std=legacy
+export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+export DEB_LDFLAGS_MAINT_STRIP = -Wl,-Bsymbolic-functions
+export DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+export DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
+export DEB_BUILD_ARCH_OS ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH_OS)
+
+ifneq (,$(wildcard /usr/share/mpi-default-dev/debian_defaults))
+include /usr/share/mpi-default-dev/debian_defaults 
+endif
+DEFAULT_MPI=$(ARCH_DEFAULT_MPI_IMPL)
+
+%:
+	dh $@ --buildsystem=cmake
+
+export OMPI_MCA_plm_rsh_agent=/bin/false                #workaround to start MPI-applications in chroot
+
+disable_mpi_archs = armel armhf kfreebsd-amd64 kfreebsd-i386 mips mipsel
+export LD_LIBRARY_PATH :=  $(CURDIR)/debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH):$(LD_LIBRARY_PATH); 
+
+export NUMJOBS=1
+ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+export NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+endif
+
+extra_flags += \
+ -DBUILD_SHARED_LIBS=ON
+
+
+override_dh_auto_configure-indep:
+override_dh_auto_build-indep:
+override_dh_auto_install-indep:
+override_dh_auto_test-indep:
+
+
+override_dh_auto_configure-arch:
+	for flavor in openmpi mpich; do \
+          echo "Configure for libscalapack-$$flavor" ; \
+          dh_auto_configure --builddirectory=build-$$flavor -- $(extra_flags) -DMPI_C_COMPILER=mpicc.$$flavor -DMPI_Fortran_COMPILER=mpif90.$$flavor -DMPI_FLAVOR=$$flavor ; \
+	done
+
+override_dh_auto_build-arch:
+	for flavor in openmpi mpich; do \
+	  echo "Building libscalapack-$$flavor" ; \
+	  dh_auto_build -O--parallel --builddirectory=build-$$flavor ; \
+	done
+
+override_dh_auto_install-arch:
+	echo "scalapack-mpi-dev=libscalapack-$(DEFAULT_MPI)-dev" > debian/libscalapack-mpi-dev.substvars
+	for flavor in openmpi mpich; do \
+	  echo "Installing scalapack-$$flavor" ; \
+	  dh_auto_install -O--parallel --builddirectory=build-$$flavor ; \
+	  sed "s/-lscalapack/-lscalapack-$$flavor/; s|/usr/lib|/usr/lib/$(DEB_HOST_MULTIARCH)|" build-$$flavor/scalapack.pc > build-$$flavor/scalapack-$$flavor.pc ; \
+	done
+
+override_dh_install-arch:
+	dh_install -a
+	dh_missing --list-missing
+	# test executables contain RUNPATH. Remove it.
+	chrpath -d debian/scalapack-mpi-test/usr/lib/$(DEB_HOST_MULTIARCH)/scalapack/*-tests/x*
+	chrpath -d debian/scalapack-mpi-test/usr/lib/$(DEB_HOST_MULTIARCH)/scalapack/*-tests/PBLAS/*tst
+	chrpath -d debian/scalapack-mpi-test/usr/lib/$(DEB_HOST_MULTIARCH)/scalapack/*-tests/PBLAS/TIMING/*tim
+	sed "s/$(DEB_HOST_MULTIARCH)/\$${CMAKE_LIBRARY_ARCHITECTURE}/g" \
+          -i debian/libscalapack-*-dev/usr/lib/cmake/scalapack-*/scalapack-targets-none.cmake
+
+
+# add --max-parallel=1 to force test in sequential mode
+# MPICH testsuite disabled as some tests fail -- why???
+
+# Note: openmpi tests routinely (but unreproducibly) fail on some buildds,
+# so don't let test failure halt the build on these arches (but let the tests run)
+ARCH_TEST_IGNORE_FAILURE=mips64el
+
+# On some other arches, openmpi3 tests never exit (don't even timeout),
+# so skip their tests altogether until a workaround or fix is known.
+ARCH_NO_OPENMPI_TEST_LIST=armel armhf i386 mipsel powerpc
+
+# The hppa build does complete, but takes a full day to timeout on half the openmpi3 tests.
+# That's too long, so add it to the no-test list
+ARCH_NO_OPENMPI_TEST_LIST += hppa
+
+override_dh_auto_test-arch:
+	for flavor in openmpi mpich; do \
+	  echo "Running tests for libscalapack-$$flavor" ; \
+	  echo '************************************************'; \
+	  echo "****** TESTING $$flavor BUILD"; \
+	  echo '************************************************'; \
+	  for testDir in PBLAS/TESTING PBLAS/TIMING TESTING; do \
+	    testfile=build-$$flavor/$${testDir}/CTestTestfile.cmake; \
+	    if ! grep -q separate_arguments.*ENV.*MPIEXEC_PREFLAGS $$testfile ; then \
+	      sed '0,/add_test/ s/add_test/separate_arguments(MPIEXEC_PREFLAGS NATIVE_COMMAND $$ENV{MPIEXEC_PREFLAGS})\nadd_test/' -i $$testfile; \
+	      sed 's/"$${MPIEXEC_PREFLAGS}"/$${MPIEXEC_PREFLAGS}/' -i $$testfile; \
+	    fi; \
+	  done; \
+	  RUNTESTS=yes; \
+	  if [ "$$flavor" = "openmpi" ]; then \
+	    case " $(ARCH_NO_OPENMPI_TEST_LIST) " in \
+	      *\ $(DEB_HOST_ARCH)\ *) RUNTESTS=no;; \
+	    esac; \
+	  fi; \
+	  if [ "$$RUNTESTS" = "yes" ]; then \
+	    ( MPIEXEC_PREFLAGS="--allow-run-as-root --oversubscribe" dh_auto_test --builddirectory=build-$$flavor 2>&1 | tee build-$$flavor/dh_auto_test.log ) || /bin/true; \
+	  else \
+	    echo Tests have been disabled on $(DEB_HOST_ARCH) | tee build-$$flavor/dh_auto_test.log; \
+	  fi; \
+	  echo '************************************************'; \
+	  echo "****** TESTING OF $$flavor BUILD IS COMPLETE"; \
+	  echo '************************************************'; \
+	done
+	# mpich has been found to Fail some tests but openmpi should not, so only check the openmpi test logs.
+	# openmpi may Timeout on slower arches, so only register actual Fails (or SegFaults), assigning them return value 2
+	# Test only on linux, since openmpi on other OS (kfreebsd, hurd) does not support fakeroot
+	#
+	# Tests are hardwired to 4 processors, so ignore failure if less than 4 are used.
+	#
+	if [ "$$DEB_BUILD_ARCH_OS" = "linux" ] && $$( grep -qE "Failed|SegFault" build-openmpi/dh_auto_test.log ); then \
+	  if [ $(NUMJOBS) -lt 4 ]; then \
+	    echo Tests are hardwired to 4 processes. Only $(NUMJOBS) processes were used for the build, so test failures will be ignored.; \
+	  fi; \
+	  echo "OpenMPI tests failed:"; \
+	  grep -E "\(Failed\)|\(SEGFAULT\)" build-openmpi/dh_auto_test.log; \
+	  if [ $(NUMJOBS) -ge 4 ]; then \
+	    case " $(ARCH_TEST_IGNORE_FAILURE) " in \
+	      *\ $(DEB_HOST_ARCH)\ *) echo Test failures ignored on $(DEB_HOST_ARCH);; \
+	      *) return 2;; \
+	    esac; \
+	  fi; \
+	fi

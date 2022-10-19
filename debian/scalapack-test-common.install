@@ -1,0 +1,4 @@
+TESTING/*.dat usr/share/scalapack
+BLACS/TESTING/*.dat usr/share/scalapack/BLACS
+PBLAS/TESTING/*.dat usr/share/scalapack/PBLAS
+PBLAS/TIMING/*.dat usr/share/scalapack/PBLAS/TIMING

@@ -1,0 +1,23 @@
+#! /bin/sh
+for flavour in openmpi mpich; do
+  for d in TESTING/*.dat; do
+    datafile=`basename $d`
+    echo usr/share/scalapack/${datafile} usr/lib/${DEB_HOST_MULTIARCH}/scalapack/${flavour}-tests/${datafile}
+  done
+  for d in BLACS/TESTING/*.dat; do
+    datafile=`basename $d`
+    echo usr/share/scalapack/BLACS/${datafile} usr/lib/${DEB_HOST_MULTIARCH}/scalapack/${flavour}-tests/BLACS/${datafile}
+  done
+  # BLACS test executables get built in the top directory, so link to them
+  for blacsTest in xCbtest xFbtest; do
+    echo usr/lib/${DEB_HOST_MULTIARCH}/scalapack/${flavour}-tests/${blacsTest} usr/lib/${DEB_HOST_MULTIARCH}/scalapack/${flavour}-tests/BLACS/${blacsTest}
+  done
+  for d in PBLAS/TESTING/*.dat; do
+    datafile=`basename $d`
+    echo usr/share/scalapack/PBLAS/${datafile} usr/lib/${DEB_HOST_MULTIARCH}/scalapack/${flavour}-tests/PBLAS/${datafile}
+  done
+  for d in PBLAS/TIMING/*.dat; do
+    datafile=`basename $d`
+    echo usr/share/scalapack/PBLAS/TIMING/${datafile} usr/lib/${DEB_HOST_MULTIARCH}/scalapack/${flavour}-tests/PBLAS/TIMING/${datafile}
+  done
+done

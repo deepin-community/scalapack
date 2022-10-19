@@ -1,0 +1,5 @@
+#! /bin/sh
+for flavour in openmpi mpich; do
+  echo usr/lib/${DEB_HOST_MULTIARCH}/scalapack/${flavour}-tests/BLACS
+  echo usr/lib/${DEB_HOST_MULTIARCH}/scalapack/${flavour}-tests/PBLAS/TIMING
+done
