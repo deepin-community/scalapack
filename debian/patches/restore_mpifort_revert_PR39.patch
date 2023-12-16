@@ -1,0 +1,13 @@
+Index: scalapack/CMakeLists.txt
+===================================================================
+--- scalapack.orig/CMakeLists.txt	2022-02-16 19:19:00.340538129 +0100
++++ scalapack/CMakeLists.txt	2022-02-16 19:19:00.336538094 +0100
+@@ -58,7 +58,7 @@
+    else()
+       message(STATUS "--> MPI Fortran Compiler : ${MPI_Fortran_COMPILER}")
+       SET(Fortran_COMPILER "${CMAKE_Fortran_COMPILER}")
+-      #SET(CMAKE_Fortran_COMPILER "${MPI_Fortran_COMPILER}")
++      SET(CMAKE_Fortran_COMPILER "${MPI_Fortran_COMPILER}")
+       message(STATUS "--> Fortran Compiler : ${CMAKE_Fortran_COMPILER}")
+    endif()
+ 

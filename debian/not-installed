@@ -1,3 +1,3 @@
 # mpi-specific versions of these scripts are drawn from build dirs
-usr/lib/cmake/scalapack-2.1.0/scalapack-targets-none.cmake
+usr/lib/cmake/scalapack-*/scalapack-targets-none.cmake
 usr/lib/pkgconfig/scalapack.pc

@@ -1,0 +1,38 @@
+Index: scalapack/CMakeLists.txt
+===================================================================
+--- scalapack.orig/CMakeLists.txt	2023-10-25 16:28:50.689587599 +0200
++++ scalapack/CMakeLists.txt	2023-10-25 16:30:31.822457408 +0200
+@@ -83,10 +83,11 @@
+    endif ()
+ endif ()
+ 
++include(GNUInstallDirs)
+ macro(SCALAPACK_install_library lib)
+   install(TARGETS ${lib} EXPORT scalapack-targets
+-    ARCHIVE DESTINATION lib${LIB_SUFFIX}
+-    LIBRARY DESTINATION lib${LIB_SUFFIX}
++    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}${LIB_SUFFIX}
++    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}${LIB_SUFFIX}
+     RUNTIME DESTINATION Testing
+   )
+ endmacro()
+@@ -112,7 +113,7 @@
+ CheckBLACSCompilerFlags()
+ 
+ set(prefix ${CMAKE_INSTALL_PREFIX})
+-set(libdir ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX})
++set(libdir ${CMAKE_INSTALL_LIBDIR}${LIB_SUFFIX})
+ set(PKG_CONFIG_DIR ${libdir}/pkgconfig)
+ 
+ # --------------------------------------------------
+@@ -318,8 +319,8 @@
+ install(FILES
+   ${SCALAPACK_BINARY_DIR}/CMakeFiles/scalapack-config.cmake
+   ${SCALAPACK_BINARY_DIR}/scalapack-config-version.cmake
+-  DESTINATION lib/cmake/scalapack-${SCALAPACK_VERSION}.${MPI_FLAVOR}
++  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/scalapack-${SCALAPACK_VERSION}.${MPI_FLAVOR}
+   )
+ 
+ install(EXPORT scalapack-targets
+-  DESTINATION lib/cmake/scalapack-${SCALAPACK_VERSION}.${MPI_FLAVOR})
++  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/scalapack-${SCALAPACK_VERSION}.${MPI_FLAVOR})

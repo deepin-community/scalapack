@@ -1,7 +1,9 @@
-cmake_minimum_required(VERSION 2.8)
-project(SCALAPACK C Fortran)
+cmake_minimum_required(VERSION 3.2)
+
+project(SCALAPACK VERSION 2.2.1 LANGUAGES C Fortran)
+
 # Configure the warning and code coverage suppression file
-configure_file( 
+configure_file(
   "${SCALAPACK_SOURCE_DIR}/CMAKE/CTestCustom.cmake.in"
   "${SCALAPACK_BINARY_DIR}/CTestCustom.cmake"
   COPYONLY
@@ -11,8 +13,8 @@ configure_file(
 set(CMAKE_MODULE_PATH "${SCALAPACK_SOURCE_DIR}/CMAKE" ${CMAKE_MODULE_PATH})
 
 if (UNIX)
-   if ( "${CMAKE_Fortran_COMPILER}" MATCHES "ifort" )
-  set( CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fltconsistency -fp_port" )
+   if ("${CMAKE_Fortran_COMPILER_ID}" STREQUAL "Intel")
+      set( CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fltconsistency -fp_port" )
    endif ()
 endif ()
 
@@ -48,18 +50,18 @@ if (MPI_FOUND)
       PATH_SUFFIXES bin
       DOC "MPI Fortran compiler.")
    MARK_AS_ADVANCED(MPI_Fortran_COMPILER)
-   
-   
+
+
 
    if ("${MPI_Fortran_COMPILER}" STREQUAL "MPI_Fortran_COMPILER-NOTFOUND")
       message(ERROR "--> MPI Fortran Compiler NOT FOUND (please set MPI_BASE_DIR accordingly")
    else()
       message(STATUS "--> MPI Fortran Compiler : ${MPI_Fortran_COMPILER}")
       SET(Fortran_COMPILER "${CMAKE_Fortran_COMPILER}")
-      SET(CMAKE_Fortran_COMPILER "${MPI_Fortran_COMPILER}")
+      #SET(CMAKE_Fortran_COMPILER "${MPI_Fortran_COMPILER}")
       message(STATUS "--> Fortran Compiler : ${CMAKE_Fortran_COMPILER}")
    endif()
-   
+
 else()
    message(STATUS "Found MPI_LIBRARY : ${MPI_FOUND} ")
    set(MPI_BASE_DIR ${MPI_BASE_DIR} CACHE PATH "MPI Path")
@@ -76,8 +78,8 @@ endif()
 
 
 if (UNIX)
-   if ( "${CMAKE_Fortran_COMPILER}" MATCHES "ifort" )
-  set( CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fltconsistency -fp_port" )
+   if ("${CMAKE_Fortran_COMPILER_ID}" STREQUAL "Intel")
+      set( CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fltconsistency -fp_port" )
    endif ()
 endif ()
 
@@ -184,7 +186,7 @@ OPTION(BUILD_STATIC_LIBS "Build static libraries" ON )
 
 # --------------------------------------------------
 # Subdirectories that need to be processed
-   
+
 macro(append_subdir_files variable dirname)
 get_directory_property(holder DIRECTORY ${dirname} DEFINITION ${variable})
 foreach(depfile ${holder})
@@ -232,29 +234,41 @@ append_subdir_files(src-C "SRC")
 
 if (UNIX)
    add_library(scalapack ${blacs} ${tools} ${tools-C} ${extra_lapack} ${pblas} ${pblas-F} ${ptzblas} ${ptools} ${pbblas} ${redist} ${src} ${src-C})
+   set_target_properties(scalapack PROPERTIES
+    VERSION ${SCALAPACK_VERSION}
+    SOVERSION ${SCALAPACK_VERSION_MAJOR}.${SCALAPACK_VERSION_MINOR})
    target_link_libraries( scalapack ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
    scalapack_install_library(scalapack)
 else (UNIX) # Need to separate Fortran and C Code
    OPTION(BUILD_SHARED_LIBS "Build shared libraries" ON )
    add_library(scalapack ${blacs} ${tools-C} ${pblas} ${ptools} ${redist} ${src-C})
+   set_target_properties(scalapack PROPERTIES
+    VERSION ${SCALAPACK_VERSION}
+    SOVERSION ${SCALAPACK_VERSION_MAJOR}.${SCALAPACK_VERSION_MINOR})
    target_link_libraries( scalapack ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
    add_library(scalapack-F ${pblas-F} ${pbblas} ${ptzblas} ${tools} ${src} ${extra_lapack} )
+   set_target_properties(scalapack-F PROPERTIES
+    VERSION ${SCALAPACK_VERSION}
+    SOVERSION ${SCALAPACK_VERSION_MAJOR}.${SCALAPACK_VERSION_MINOR})
    target_link_libraries( scalapack-F ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
    scalapack_install_library(scalapack)
    scalapack_install_library(scalapack-F)
 endif (UNIX)
-add_subdirectory(TESTING)
+
+option(SCALAPACK_BUILD_TESTS "Build all tests of the ScaLAPACK library" ON)
+if(${SCALAPACK_BUILD_TESTS})
+  add_subdirectory(TESTING)
+endif()
 
 # --------------------------------------------------
-# CPACK Packaging 
+# CPACK Packaging
 
 SET(CPACK_PACKAGE_NAME "ScaLAPACK")
 SET(CPACK_PACKAGE_VENDOR "University of Tennessee, Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "ScaLAPACK- Linear Algebra Package")
-set(SCALAPACK_VERSION 2.1.0)
-set(CPACK_PACKAGE_VERSION_MAJOR 2)
-set(CPACK_PACKAGE_VERSION_MINOR 1)
-set(CPACK_PACKAGE_VERSION_PATCH 0)
+set(CPACK_PACKAGE_VERSION_MAJOR ${SCALAPACK_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${SCALAPACK_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${SCALAPACK_VERSION_PATCH})
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "SCALAPACK")
 IF(WIN32 AND NOT UNIX)
@@ -308,4 +322,3 @@ install(FILES
 
 install(EXPORT scalapack-targets
   DESTINATION lib/cmake/scalapack-${SCALAPACK_VERSION})
-

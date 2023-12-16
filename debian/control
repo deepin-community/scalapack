@@ -3,9 +3,9 @@ Section: devel
 Priority: optional
 Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
 Uploaders: Muammar El Khatib <muammar@debian.org>
-Standards-Version: 4.5.0
+Standards-Version: 4.6.2
 Build-Depends: debhelper-compat (= 13),
- cmake, 
+ cmake,
  mpi-default-dev,
  mpi-default-bin,
  libopenmpi-dev,
@@ -15,11 +15,11 @@ Build-Depends: debhelper-compat (= 13),
  liblapack-dev | libopenblas-dev | libatlas-base-dev | liblapack.so,
  pkg-config,
  chrpath
-Homepage: http://www.netlib.org/scalapack/
+Homepage: https://www.netlib.org/scalapack/
 Vcs-Git: https://salsa.debian.org/science-team/scalapack.git
 Vcs-Browser: https://salsa.debian.org/science-team/scalapack
 
-Package: libscalapack-openmpi2.1
+Package: libscalapack-openmpi2.2
 Section: libs
 Architecture: any
 Multi-Arch: same
@@ -31,7 +31,7 @@ Suggests: scalapack-doc
 Description: Scalable Linear Algebra Package - Shared libs for OpenMPI
  ScaLAPACK is the parallel version of LAPACK used on clusters.
  .
- There are packages for the shared libraries (this one), for the 
+ There are packages for the shared libraries (this one), for the
  static libraries and the development files and for test programs.
  .
  Also included:
@@ -40,7 +40,7 @@ Description: Scalable Linear Algebra Package - Shared libs for OpenMPI
  .
  This package supports the OpenMPI implementation of MPI.
 
-Package: libscalapack-mpich2.1
+Package: libscalapack-mpich2.2
 Section: libs
 Architecture: any
 Multi-Arch: same
@@ -52,7 +52,7 @@ Suggests: scalapack-doc
 Description: Scalable Linear Algebra Package - Shared libs for MPICH
  ScaLAPACK is the parallel version of LAPACK used on clusters.
  .
- There are packages for the shared libraries (this one), for the 
+ There are packages for the shared libraries (this one), for the
  static libraries and the development files and for test programs.
  .
  Also included:
@@ -86,7 +86,7 @@ Package: libscalapack-mpich-dev
 Section: libdevel
 Architecture: any
 Multi-Arch: same
-Depends: libscalapack-mpich2.1 (= ${binary:Version}), ${misc:Depends}
+Depends: libscalapack-mpich2.2 (= ${binary:Version}), ${misc:Depends}
 Breaks: libscalapack-mpi-dev (<< 2.0.2-1)
 Replaces: libblacs-mpi-dev
 Provides: libblacs-mpi-dev
@@ -108,7 +108,7 @@ Package: libscalapack-openmpi-dev
 Section: libdevel
 Architecture: any
 Multi-Arch: same
-Depends: libscalapack-openmpi2.1 (= ${binary:Version}), ${misc:Depends}
+Depends: libscalapack-openmpi2.2 (= ${binary:Version}), ${misc:Depends}
 Breaks: libscalapack-mpi-dev (<< 2.0.2-1)
 Replaces: libblacs-mpi-dev
 Provides: libblacs-mpi-dev
