@@ -5,24 +5,22 @@
 export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
 export DEB_CXXFLAGS_MAINT_APPEND  = -Wall -pedantic
 export DEB_FFLAGS_MAINT_APPEND  = -std=legacy
-export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
 export DEB_LDFLAGS_MAINT_STRIP = -Wl,-Bsymbolic-functions
-export DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
-export DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
-export DEB_BUILD_ARCH_OS ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH_OS)
+
+include /usr/share/dpkg/architecture.mk
 
 ifneq (,$(wildcard /usr/share/mpi-default-dev/debian_defaults))
-include /usr/share/mpi-default-dev/debian_defaults 
+include /usr/share/mpi-default-dev/debian_defaults
 endif
 DEFAULT_MPI=$(ARCH_DEFAULT_MPI_IMPL)
+
+include /usr/share/dpkg/pkg-info.mk
+export DEB_VERSION_UPSTREAM
 
 %:
 	dh $@ --buildsystem=cmake
 
 export OMPI_MCA_plm_rsh_agent=/bin/false                #workaround to start MPI-applications in chroot
-
-disable_mpi_archs = armel armhf kfreebsd-amd64 kfreebsd-i386 mips mipsel
-export LD_LIBRARY_PATH :=  $(CURDIR)/debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH):$(LD_LIBRARY_PATH); 
 
 export NUMJOBS=1
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
@@ -30,8 +28,14 @@ export NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS
 endif
 
 extra_flags += \
- -DBUILD_SHARED_LIBS=ON
+ -DBUILD_SHARED_LIBS=ON \
+ -DSCALAPACK_BUILD_TESTING=ON
 
+
+execute_after_dh_clean:
+	cd BLACS/INSTALL; rm -rf xintface Makefile CMakeCache.txt cmake_install.cmake CMakeFiles
+	cd PBLAS; rm -f TESTING/PB_Cabort.c TESTING/PB_Cwarn.c TIMING/PB_Cabort.c TIMING/PB_Cwarn.c
+	rm -rf build-openmpi build-mpich
 
 override_dh_auto_configure-indep:
 override_dh_auto_build-indep:
@@ -42,7 +46,9 @@ override_dh_auto_test-indep:
 override_dh_auto_configure-arch:
 	for flavor in openmpi mpich; do \
           echo "Configure for libscalapack-$$flavor" ; \
-          dh_auto_configure --builddirectory=build-$$flavor -- $(extra_flags) -DMPI_C_COMPILER=mpicc.$$flavor -DMPI_Fortran_COMPILER=mpif90.$$flavor -DMPI_FLAVOR=$$flavor ; \
+          dh_auto_configure --builddirectory=build-$$flavor -- $(extra_flags) \
+            -DMPI_C_COMPILER=mpicc.$$flavor -DMPI_Fortran_COMPILER=mpif90.$$flavor \
+            -DMPIEXEC_EXECUTABLE=/usr/bin/mpiexec.$$flavor -DMPI_FLAVOR=$$flavor ; \
 	done
 
 override_dh_auto_build-arch:
@@ -56,18 +62,14 @@ override_dh_auto_install-arch:
 	for flavor in openmpi mpich; do \
 	  echo "Installing scalapack-$$flavor" ; \
 	  dh_auto_install -O--parallel --builddirectory=build-$$flavor ; \
-	  sed "s/-lscalapack/-lscalapack-$$flavor/; s|/usr/lib|/usr/lib/$(DEB_HOST_MULTIARCH)|" build-$$flavor/scalapack.pc > build-$$flavor/scalapack-$$flavor.pc ; \
 	done
 
-override_dh_install-arch:
-	dh_install -a
+execute_after_dh_install-arch:
 	dh_missing --list-missing
 	# test executables contain RUNPATH. Remove it.
 	chrpath -d debian/scalapack-mpi-test/usr/lib/$(DEB_HOST_MULTIARCH)/scalapack/*-tests/x*
 	chrpath -d debian/scalapack-mpi-test/usr/lib/$(DEB_HOST_MULTIARCH)/scalapack/*-tests/PBLAS/*tst
 	chrpath -d debian/scalapack-mpi-test/usr/lib/$(DEB_HOST_MULTIARCH)/scalapack/*-tests/PBLAS/TIMING/*tim
-	sed "s/$(DEB_HOST_MULTIARCH)/\$${CMAKE_LIBRARY_ARCHITECTURE}/g" \
-          -i debian/libscalapack-*-dev/usr/lib/cmake/scalapack-*/scalapack-targets-none.cmake
 
 
 # add --max-parallel=1 to force test in sequential mode
@@ -86,6 +88,7 @@ ARCH_NO_OPENMPI_TEST_LIST=armel armhf i386 mipsel powerpc
 ARCH_NO_OPENMPI_TEST_LIST += hppa
 
 override_dh_auto_test-arch:
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	for flavor in openmpi mpich; do \
 	  echo "Running tests for libscalapack-$$flavor" ; \
 	  echo '************************************************'; \
@@ -100,12 +103,16 @@ override_dh_auto_test-arch:
 	  done; \
 	  RUNTESTS=yes; \
 	  if [ "$$flavor" = "openmpi" ]; then \
+	    MPIEXEC_PREFLAGS="--allow-run-as-root --oversubscribe"; \
 	    case " $(ARCH_NO_OPENMPI_TEST_LIST) " in \
 	      *\ $(DEB_HOST_ARCH)\ *) RUNTESTS=no;; \
 	    esac; \
+	  else \
+	    unset MPIEXEC_PREFLAGS; \
 	  fi; \
 	  if [ "$$RUNTESTS" = "yes" ]; then \
-	    ( MPIEXEC_PREFLAGS="--allow-run-as-root --oversubscribe" dh_auto_test --builddirectory=build-$$flavor 2>&1 | tee build-$$flavor/dh_auto_test.log ) || /bin/true; \
+	    ( LD_LIBRARY_PATH=$(CURDIR)/debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH):$(LD_LIBRARY_PATH) \
+	      MPIEXEC_PREFLAGS="$${MPIEXEC_PREFLAGS}" dh_auto_test --builddirectory=build-$$flavor 2>&1 | tee build-$$flavor/dh_auto_test.log ) || /bin/true; \
 	  else \
 	    echo Tests have been disabled on $(DEB_HOST_ARCH) | tee build-$$flavor/dh_auto_test.log; \
 	  fi; \
@@ -132,3 +139,4 @@ override_dh_auto_test-arch:
 	    esac; \
 	  fi; \
 	fi
+endif

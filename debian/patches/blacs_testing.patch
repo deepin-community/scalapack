@@ -1,7 +1,7 @@
 Index: scalapack/BLACS/TESTING/runtest.cmake
 ===================================================================
---- scalapack.orig/BLACS/TESTING/runtest.cmake
-+++ scalapack/BLACS/TESTING/runtest.cmake
+--- scalapack.orig/BLACS/TESTING/runtest.cmake	2022-02-16 13:22:41.514544270 +0100
++++ scalapack/BLACS/TESTING/runtest.cmake	2022-02-16 13:22:41.510544229 +0100
 @@ -1,9 +1,10 @@
  message("Running BLACS TESTS")
 -message(STATUS "${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ./${TEST_PROG}")
@@ -15,7 +15,7 @@ Index: scalapack/BLACS/TESTING/runtest.cmake
                  OUTPUT_FILE "out_${TEST_PROG}.txt"
                  ERROR_FILE "error_${TEST_PROG}.txt"
                  RESULT_VARIABLE HAD_ERROR)
-@@ -13,10 +14,11 @@ if(HAD_ERROR)
+@@ -13,10 +14,11 @@
      # So we are going to check that the output have the last line of the testing : DONE BLACS_GRIDEXIT
      file(READ "out_${TEST_PROG}.txt" TESTSTRING)
  
@@ -30,9 +30,9 @@ Index: scalapack/BLACS/TESTING/runtest.cmake
         message( STATUS "Test Passed")
 Index: scalapack/BLACS/TESTING/CMakeLists.txt
 ===================================================================
---- scalapack.orig/BLACS/TESTING/CMakeLists.txt
-+++ scalapack/BLACS/TESTING/CMakeLists.txt
-@@ -30,6 +30,7 @@ add_test(xCbtest
+--- scalapack.orig/BLACS/TESTING/CMakeLists.txt	2022-02-16 13:22:41.514544270 +0100
++++ scalapack/BLACS/TESTING/CMakeLists.txt	2022-02-16 13:22:41.510544229 +0100
+@@ -34,6 +34,7 @@
       ${CMAKE_COMMAND}
      -DMPIEXEC=${MPIEXEC}
      -DMPIEXEC_NUMPROC_FLAG=${MPIEXEC_NUMPROC_FLAG}
@@ -40,7 +40,7 @@ Index: scalapack/BLACS/TESTING/CMakeLists.txt
      -DTEST_PROG=xCbtest
      -DOUTPUTDIR=${SCALAPACK_BINARY_DIR}/BLACS/TESTING
      -DRUNTIMEDIR=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-@@ -41,6 +42,7 @@ add_test(xFbtest
+@@ -45,6 +46,7 @@
       ${CMAKE_COMMAND}
      -DMPIEXEC=${MPIEXEC}
      -DMPIEXEC_NUMPROC_FLAG=${MPIEXEC_NUMPROC_FLAG}

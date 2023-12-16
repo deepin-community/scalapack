@@ -1,4 +1,4 @@
 # sample test input files are stored in usr/share,
 # but used by binary packages expecting to find them locally in usr/lib,
 # hence links are needed
-scalapack-mpi-test: breakout-link usr/lib/*/scalapack/*-tests/*.dat -> usr/share/scalapack/*.dat
+scalapack-mpi-test: ldconfig-escape usr/lib/*/scalapack/*-tests/*.dat -> usr/share/scalapack/*.dat

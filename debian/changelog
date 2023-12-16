@@ -1,3 +1,75 @@
+scalapack (2.2.1-3) unstable; urgency=medium
+
+  * Team upload.
+
+  [ Debian Janitor ]
+  * Trim trailing whitespace.
+  * Use secure URI in Homepage field.
+  * Update renamed lintian tag names in lintian overrides.
+  * Set upstream metadata fields: Repository-Browse.
+  * Fix day-of-week for changelog entry 1.8.0-7.
+  * Avoid explicitly specifying -Wl,--as-needed linker flag.
+
+  [ Drew Parsons ]
+  * debian patch install_libdir_multiarch.patch installs libraries,
+    cmake and pkgconfig files into multiarch destinations
+    (CMAKE_INSTALL_LIBDIR from GNUInstallDirs). Closes: #1051986.
+  * extend debian patch sharedlibs-soname.patch to add MPI_FLAVOR
+    suffix to installed pkgconfig files and cmake install dirs.
+    Simplifies package install scripts (executable scripts no longer
+    needed).
+  * debian/rules: set LD_LIBRARY_PATH to new libraries only when
+    running tests
+  * Standards-Version: 4.6.2
+
+ -- Drew Parsons <dparsons@debian.org>  Thu, 26 Oct 2023 00:08:06 +0200
+
+scalapack (2.2.1-2) unstable; urgency=medium
+
+  * Team upload
+  * Fix FTBFS against cmake 3.24.
+    The CMakeFiles/Export/ subdirectory structure has changed between CMake 3.23
+    and 3.24. We are relying on this directory for installing
+    scalapack-targets-none.cmake, which differs between OpenMPI and MPICH.
+    Adapt libscalapack-{openmpi,mpich}-dev.install accordingly.
+    See https://gitlab.kitware.com/cmake/cmake/-/issues/23883
+    (Closes: #1020170)
+  * Honour DEB_BUILD_OPTIONS=nocheck
+  * Add missing files to clean rule
+
+ -- Sébastien Villemot <sebastien@debian.org>  Tue, 11 Oct 2022 18:05:29 +0200
+
+scalapack (2.2.1-1) unstable; urgency=medium
+
+  * Team upload.
+  * New upstream release.
+    - applies debian patch project_version.patch
+  * use DEB_VERSION_UPSTREAM from /usr/share/dpkg/pkg-info.mk
+    in build scripts
+  * replace DEB_HOST_MULTIARCH with CMAKE_LIBRARY_ARCHITECTURE in all
+    installed cmake files
+  * specify mpiexec for MPI flavor when configuring the build
+
+ -- Drew Parsons <dparsons@debian.org>  Sun, 06 Mar 2022 11:46:29 +0100
+
+scalapack (2.2.0-1exp1) experimental; urgency=medium
+
+  * Team upload.
+  * New upstream major release (soname bump to 2.2).
+    (technically a minor version update, but the debian soname tracks
+     the major.minor version)
+  * Standards-Version: 4.6.0
+  * debian patch restore_mpifort_revert_PR39.patch reverts upstream
+    PR#39 to restore assignment of MPI_Fortran_COMPILER as
+    CMAKE_Fortran_COMPILER. Otherwise tests fail to link libmpi.so
+    cf. https://github.com/Reference-ScaLAPACK/scalapack/issues/47
+  * split debian patch project_version.patch out of
+    sharedlibs-soname.patch to set VERSION via the cmake project command
+  * clean generated files after dh_clean
+  * build BLACS and PBLAS tests (SCALAPACK_BUILD_TESTING)
+
+ -- Drew Parsons <dparsons@debian.org>  Thu, 17 Feb 2022 10:37:33 +0100
+
 scalapack (2.1.0-4) unstable; urgency=medium
 
   * Team upload.
@@ -123,7 +195,7 @@ scalapack (2.0.2-2) unstable; urgency=medium
   * Team upload.
   * Standards-Version: 4.1.0
   * blacs is now included in scalapack. blacs initialisation is now
-    independent of whether it is called from C or Fortran. 
+    independent of whether it is called from C or Fortran.
     Closes: #854228.
 
  -- Drew Parsons <dparsons@debian.org>  Sun, 10 Sep 2017 01:30:35 +0800
@@ -173,7 +245,7 @@ scalapack (2.0.2-1exp4) experimental; urgency=medium
   * Provide test executables for both scalapack and blacs in
     scalapack-mpi-test. Best run using ctest.
   * debian control files now use /bin/sh instead of dh-exec when needed.
-  * Both libscalapack-openmpi-dev and libscalapack-openmpi-dev 
+  * Both libscalapack-openmpi-dev and libscalapack-openmpi-dev
     Breaks: libscalapack-mpi-dev (<< 2.0.2-1), since they now handle
     /usr/lib/<arch>/libscalapack-{openmpi,mpich}.so. Closes: #870582.
   * libscalapack-{openmpi,mpich}-dev provides scalapack cmake and
@@ -345,7 +417,7 @@ scalapack (1.8.0-7) unstable; urgency=low
   * Patched Mptr offset calculation to enable arrays with more than
     2^31 bytes. Thanks to David Gleich.
 
- -- Muammar El Khatib <muammar@debian.org>  Tue, 18 Sep 2011 08:26:29 +0200
+ -- Muammar El Khatib <muammar@debian.org>  Sun, 18 Sep 2011 08:26:29 +0200
 
 scalapack (1.8.0-6) unstable; urgency=low
 

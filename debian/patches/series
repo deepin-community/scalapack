@@ -2,3 +2,5 @@ sharedlibs-soname.patch
 blacs_testing.patch
 pblas_testing.patch
 scalapack_testing.patch
+restore_mpifort_revert_PR39.patch
+install_libdir_multiarch.patch

@@ -1,2 +1,0 @@
-#! /bin/sh
-echo usr/lib/libscalapack-mpich.so.* usr/lib/${DEB_HOST_MULTIARCH}
