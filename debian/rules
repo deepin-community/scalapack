@@ -6,6 +6,10 @@ export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
 export DEB_CXXFLAGS_MAINT_APPEND  = -Wall -pedantic
 export DEB_FFLAGS_MAINT_APPEND  = -std=legacy
 export DEB_LDFLAGS_MAINT_STRIP = -Wl,-Bsymbolic-functions
+# remove -Werror=implicit-function-declaration until BLACS is properly fixed
+# https://bugs.debian.org/1066328
+# https://github.com/Reference-ScaLAPACK/scalapack/issues/31
+export DEB_BUILD_MAINT_OPTIONS = qa=-bug-implicit-func
 
 include /usr/share/dpkg/architecture.mk
 
