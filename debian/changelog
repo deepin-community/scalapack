@@ -1,3 +1,11 @@
+scalapack (2.2.1-3.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Disable -Werror=implicit-function-declaration as that's the only viable
+    way to make this build (Closes: #1066328).
+
+ -- Andrey Rakhmatullin <wrar@debian.org>  Sat, 30 Mar 2024 11:47:52 +0500
+
 scalapack (2.2.1-3) unstable; urgency=medium
 
   * Team upload.
